@@ -287,7 +287,7 @@ class LectorTmo :
         val chapters = mutableListOf<SChapter>()
         document.select(regularChapterListSelector).forEach { chapelement ->
             val chapterName = chapelement
-    .           .selectFirst("span.chapter-number")
+                .selectFirst("span.chapter-number")
                 ?.text()
                 ?.trim()
                 .orEmpty()
