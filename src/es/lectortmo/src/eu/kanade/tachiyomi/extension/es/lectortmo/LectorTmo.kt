@@ -43,7 +43,7 @@ class LectorTmo :
 
     override val name = "TuMangaOnline"
 
-    override val baseUrl = "https://zonatmo.com"
+    override val baseUrl = "https://zonatmo.org"
 
     override val lang = "es"
 
