@@ -356,7 +356,7 @@ class LectorTmo :
             }
         }
 
-        doc.select("#reader-wrap img")
+        return doc.select("#reader-wrap img")
             .mapIndexed { i, img ->
                 Page(
                     i,
