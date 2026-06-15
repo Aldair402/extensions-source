@@ -116,10 +116,16 @@ class LectorTmo :
     override fun popularMangaSelector() = "div.element"
 
     override fun popularMangaFromElement(element: Element) = SManga.create().apply {
-        element.select("div.element > a").let {
-            setUrlWithoutDomain(it.attr("href").substringAfter(" "))
-            title = it.select("h4.text-truncate").text()
-            thumbnail_url = it.select("style").toString().substringAfter("('").substringBeforeLast("')")
+        element.selectFirst("div.element > a")?.let { a ->
+            setUrlWithoutDomain(a.attr("href"))
+            title = a.selectFirst("h4.text-truncate")
+                ?.text()
+                .orEmpty()
+            val thumb = a.selectFirst(".thumbnail.book")
+            thumbnail_url = thumb
+                ?.attr("data-bg")
+                ?.takeIf { it.isNotBlank() }
+                ?: thumb?.selectFirst("img.cover-bg-img")?.attr("src")
         }
     }
 
