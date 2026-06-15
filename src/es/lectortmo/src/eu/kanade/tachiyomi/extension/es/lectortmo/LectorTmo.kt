@@ -158,7 +158,7 @@ class LectorTmo :
     private fun searchMangaBySlugRequest(slug: String) = GET("$baseUrl/$PREFIX_LIBRARY/$slug", tmoHeaders)
 
     override fun searchMangaRequest(page: Int, query: String, filters: FilterList): Request {
-        val url = "$baseUrl/library".toHttpUrl().newBuilder()
+        val url = "$baseUrl/biblioteca".toHttpUrl().newBuilder()
         url.addQueryParameter("title", query)
         if (getSFWModePref()) {
             SFW_MODE_PREF_EXCLUDE_GENDERS.forEach { gender ->
@@ -290,16 +290,10 @@ class LectorTmo :
                 .selectFirst("span.chapter-number")
                 ?.text()
                 ?.trim()
-                .orEmpty()
-            val chapterScanlator = chapelement.select("ul.chapter-list > li")
-            if (getScanlatorPref()) {
-                chapterScanlator.forEach { chapters.add(chapterFromElement(it, chapterName)) }
-            } else {
-                chapterScanlator.first { chapters.add(chapterFromElement(it, chapterName)) }
-            }
+               .orEmpty()
+            chapters.add(chapterFromElement(chapelement, chapterName))
         }
         return chapters
-    }
 
     private val oneShotChapterListSelector = "div.chapter-list-element > ul.list-group li.list-group-item"
 
@@ -326,8 +320,9 @@ class LectorTmo :
             ?: 0
     }
 
-    private fun parseChapterDate(date: String): Long = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-        .parse(date)?.time ?: 0
+    private fun parseChapterDate(date: String): Long =
+        SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+            .parse(date)?.time ?: 0
 
     override fun fetchPageList(chapter: SChapter): Observable<List<Page>> = safeClient.newCall(pageListRequest(chapter))
         .asObservableSuccess()
