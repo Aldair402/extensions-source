@@ -294,7 +294,7 @@ class LectorTmo :
             chapters.add(chapterFromElement(chapelement, chapterName))
         }
         return chapters
-
+    }
     private val oneShotChapterListSelector = "div.chapter-list-element > ul.list-group li.list-group-item"
 
     private val regularChapterListSelector = "#chapters-list > li"
