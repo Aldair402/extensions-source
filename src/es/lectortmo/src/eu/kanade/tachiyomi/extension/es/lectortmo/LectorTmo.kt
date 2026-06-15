@@ -235,7 +235,7 @@ class LectorTmo :
             mangaDetailsParse(response).apply { initialized = true }
         }
 
-    override fun mangaDetailsRequest(manga: SManga) = GET(baseUrl + manga.url, tmoHeaders)
+    override fun mangaDetailsRequest(manga: SManga) = GET(baseUrl + manga.url + "?show_all=1", tmoHeaders)
 
     override fun mangaDetailsParse(document: Document) = SManga.create().apply {
         title = document.select("h2.element-subtitle").text()
@@ -290,14 +290,14 @@ class LectorTmo :
                 .selectFirst("span.chapter-number")
                 ?.text()
                 ?.trim()
-               .orEmpty()
+                .orEmpty()
             chapters.add(chapterFromElement(chapelement, chapterName))
         }
         return chapters
     }
     private val oneShotChapterListSelector = "div.chapter-list-element > ul.list-group li.list-group-item"
 
-    private val regularChapterListSelector = "#chapters-list > li"
+    private val regularChapterListSelector = "#chapters-list > li, #chapters-hidden li"
 
     override fun chapterListSelector() = throw UnsupportedOperationException()
 
