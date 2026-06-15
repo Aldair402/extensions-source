@@ -279,14 +279,18 @@ class LectorTmo :
         val document = response.asJsoup()
 
         // One-shot
-        if (document.select("div.chapters").isEmpty()) {
+        if (document.select("div.element-chapters").isEmpty()) {
             return document.select(oneShotChapterListSelector).map { chapterFromElement(it, oneShotChapterName) }
         }
 
         // Regular list of chapters
         val chapters = mutableListOf<SChapter>()
         document.select(regularChapterListSelector).forEach { chapelement ->
-            val chapterName = chapelement.select("div.col-10.text-truncate").text().replace("&nbsp;", " ").trim()
+            val chapterName = chapelement
+    .           selectFirst("span.chapter-number")
+                ?.text()
+                ?.trim()
+                .orEmpty()
             val chapterScanlator = chapelement.select("ul.chapter-list > li")
             if (getScanlatorPref()) {
                 chapterScanlator.forEach { chapters.add(chapterFromElement(it, chapterName)) }
