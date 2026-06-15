@@ -356,10 +356,10 @@ class LectorTmo :
             }
         }
 
-        doc.select("div.viewer-container img:not(noscript img)").let {
-            return it.mapIndexed { i, img ->
-                Page(i, doc.location(), img.imgAttr())
-            }
+        doc.select("#reader-wrap img")
+            .mapIndexed { i, img ->
+                Page(i, doc.location(), img.attr("src").ifBlank {img.attr("data-src")})
+            
         }
     }
 
