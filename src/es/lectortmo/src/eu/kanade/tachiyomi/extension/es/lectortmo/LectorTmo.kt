@@ -299,19 +299,27 @@ class LectorTmo :
 
     private val oneShotChapterListSelector = "div.chapter-list-element > ul.list-group li.list-group-item"
 
-    private val regularChapterListSelector = "div.chapters > ul.list-group li.p-0.list-group-item"
+    private val regularChapterListSelector = "#chapters-list > li"
 
     override fun chapterListSelector() = throw UnsupportedOperationException()
 
     override fun chapterFromElement(element: Element) = throw UnsupportedOperationException()
 
     private fun chapterFromElement(element: Element, chName: String) = SChapter.create().apply {
-        url = element.select("div.row > .text-right > a").attr("href")
+        url = element
+            .selectFirst("div.chapter-detail a[href*=view_uploads]")
+            ?.attr("href")
+            .orEmpty()
         name = chName
-        scanlator = element.select("div.col-md-6.text-truncate").text()
-        date_upload = element.select("span.badge.badge-primary.p-2").first()?.text()?.let {
-            parseChapterDate(it)
-        } ?: 0
+        scanlator = element
+            .selectFirst("div.chapter-detail a[href*=groups]")
+            ?.text()
+            .orEmpty()
+        date_upload = element
+            .selectFirst("div.chapter-detail span.text-muted")
+            ?.text()
+            ?.let(::parseChapterDate)
+            ?: 0
     }
 
     private fun parseChapterDate(date: String): Long = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
