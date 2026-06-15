@@ -38,7 +38,8 @@ jobs:
             -storepass android \
             -keypass android \
             -dname "CN=Android Debug,O=Android,C=US"
-            
+      - name: kill me
+        run: ./gradlew spotlessApply
       - name: Build extension
         env:
           ALIAS: androiddebugkey
