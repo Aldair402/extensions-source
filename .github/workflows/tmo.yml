@@ -40,6 +40,10 @@ jobs:
             -dname "CN=Android Debug,O=Android,C=US"
             
       - name: Build extension
+        env:
+          ALIAS: androiddebugkey
+          KEY_STORE_PASSWORD: android
+          KEY_PASSWORD: android
         run: |
            ./gradlew \
             -PstorePassword=android \
