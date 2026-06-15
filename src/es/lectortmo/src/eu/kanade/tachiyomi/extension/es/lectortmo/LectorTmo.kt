@@ -109,7 +109,7 @@ class LectorTmo :
             popularMangaParse(response)
         }
 
-    override fun popularMangaRequest(page: Int) = GET("$baseUrl/library?order_item=likes_count&order_dir=desc&filter_by=title${getSFWUrlPart()}&_pg=1&page=$page", tmoHeaders)
+    override fun popularMangaRequest(page: Int) = GET("$baseUrl/biblioteca?order_item=likes_count&order_dir=desc&filter_by=title${getSFWUrlPart()}&_pg=1&page=$page", tmoHeaders)
 
     override fun popularMangaNextPageSelector() = "a[rel='next']"
 
@@ -129,7 +129,7 @@ class LectorTmo :
             latestUpdatesParse(response)
         }
 
-    override fun latestUpdatesRequest(page: Int) = GET("$baseUrl/library?order_item=creation&order_dir=desc&filter_by=title${getSFWUrlPart()}&_pg=1&page=$page", tmoHeaders)
+    override fun latestUpdatesRequest(page: Int) = GET("$baseUrl/biblioteca?order_item=creation&order_dir=desc&filter_by=title${getSFWUrlPart()}&_pg=1&page=$page", tmoHeaders)
 
     override fun latestUpdatesNextPageSelector() = popularMangaNextPageSelector()
 
@@ -622,7 +622,7 @@ class LectorTmo :
         private const val SAVE_LAST_CF_URL_PREF_SUMMARY = "Guarda la última URL con error de Cloudflare para que se pueda acceder a ella al abrir la serie en WebView."
         private const val SAVE_LAST_CF_URL_PREF_DEFAULT_VALUE = true
 
-        const val PREFIX_LIBRARY = "library"
+        const val PREFIX_LIBRARY = "biblioteca"
         const val PREFIX_SLUG_SEARCH = "slug:"
 
         private val SORTABLES = listOf(
