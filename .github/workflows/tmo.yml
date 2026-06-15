@@ -41,7 +41,11 @@ jobs:
             
       - name: Build extension
         run: |
-          ./gradlew :src:es:lectortmo:assembleRelease
+           ./gradlew \
+            -PstorePassword=android \
+            -PkeyPassword=android \
+            -PkeyAlias=androiddebugkey \
+            :src:es:lectortmo:assembleRelease
 
       - name: Find APK
         run: |
