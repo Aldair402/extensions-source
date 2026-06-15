@@ -357,10 +357,13 @@ class LectorTmo :
         }
 
         doc.select("#reader-wrap img")
-            .mapIndexed { i, img ->
-                Page(i, doc.location(), img.attr("src").ifBlank {img.attr("data-src")})
-            
-        }
+			.mapIndexed { i, img ->
+				Page(
+					i,
+					doc.location(),
+					img.attr("src").ifBlank { img.attr("data-src") },
+				)
+			}
     }
 
     private tailrec fun redirectToReadPage(document: Document): Document {
