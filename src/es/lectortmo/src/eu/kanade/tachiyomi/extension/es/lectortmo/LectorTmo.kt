@@ -337,7 +337,7 @@ class LectorTmo :
         return doc.select("#reader-wrap .reader-img-wrap img")
              .mapIndexed { i, img ->
                  val url = img.attr("src").ifBlank { img.attr("data-src") }
-    .                .ifBlank { img.attr("abs:data-src") }
+                     .ifBlank { img.attr("abs:data-src") }
               Page(i, doc.location(), url)
               }
     }
