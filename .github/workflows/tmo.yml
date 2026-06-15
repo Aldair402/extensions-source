@@ -1,0 +1,43 @@
+name: Build LectorTMO
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'src/es/lectortmo/**'
+      - '.github/workflows/build-lectortmo.yml'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Make gradlew executable
+        run: chmod +x gradlew
+
+      - name: Build extension
+        run: |
+          ./gradlew :src:es:lectortmo:assembleRelease
+
+      - name: Find APK
+        run: |
+          find . -name "*.apk"
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: lectortmo-apk
+          path: |
+            **/*.apk
