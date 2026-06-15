@@ -235,7 +235,7 @@ class LectorTmo :
             mangaDetailsParse(response).apply { initialized = true }
         }
 
-    override fun mangaDetailsRequest(manga: SManga) = GET(baseUrl + manga.url + "?show_all=1", tmoHeaders)
+    override fun mangaDetailsRequest(manga: SManga) = GET(baseUrl + manga.url, tmoHeaders)
 
     override fun mangaDetailsParse(document: Document) = SManga.create().apply {
         title = document.select("h2.element-subtitle").text()
@@ -333,44 +333,13 @@ class LectorTmo :
     override fun pageListRequest(chapter: SChapter): Request = GET(chapter.url, tmoHeaders)
 
     override fun pageListParse(document: Document): List<Page> {
-        var doc = redirectToReadPage(document)
-
-        val currentUrl = doc.location()
-
-        val newUrl = if (!currentUrl.contains("cascade")) {
-            currentUrl.substringBefore("paginated") + "cascade"
-        } else {
-            currentUrl
-        }
-
-        if (currentUrl != newUrl) {
-            val redirectHeaders = super.headersBuilder()
-                .set("Referer", doc.location())
-                .build()
-            doc = client.newCall(GET(newUrl, redirectHeaders)).execute().asJsoup()
-        }
-        val imagesScript = doc.selectFirst("script:containsData(var dirPath):containsData(var images)")
-
-        imagesScript?.data()?.let {
-            val dirPath = DIRPATH_REGEX.find(imagesScript.data())?.groupValues?.get(1)
-            val images = IMAGES_REGEX.find(imagesScript.data())?.groupValues?.get(1)?.split(",")?.map { img ->
-                img.trim().removeSurrounding("\"")
-            }
-            if (dirPath != null && images != null) {
-                return images.mapIndexed { i, img ->
-                    Page(i, doc.location(), "$dirPath$img")
-                }
-            }
-        }
-
-        return doc.select("#reader-wrap img")
-            .mapIndexed { i, img ->
-                Page(
-                    i,
-                    doc.location(),
-                    img.attr("src").ifBlank { img.attr("data-src") },
-                )
-            }
+        val doc = redirectToReadPage(document)
+        return doc.select("#reader-wrap .reader-img-wrap img")
+             .mapIndexed { i, img ->
+                 val url = img.attr("src").ifBlank { img.attr("data-src") }
+    .                .ifBlank { img.attr("abs:data-src") }
+              Page(i, doc.location(), url)
+              }
     }
 
     private tailrec fun redirectToReadPage(document: Document): Document {
